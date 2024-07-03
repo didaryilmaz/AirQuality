@@ -22,7 +22,7 @@ Hava Kalite Endeks Değerlerine Göre Girdikleri Gruplar (İyi, Orta, Hassas Gru
 Ülkelerin Hava Kalite Endeks değerleri detaylı olarak interaktif bir harita üzerinde gösterilir. Kullanıcılar, değerine göre ülkelerin hava kalite endeks gruplandırılmasını gözlemleyebilir.
 
 ### Graf Veri Modeli ile Görselleştirme:
-Ülkelerin Hava Kalite Endeks değerlerine göre gruplandırılmasını anlamak için graf veri modeli kullanılır. Hava kalite endeks değerleri kenar yapısı ile, ülkeler ise düğüm yapısı ile görselleştirilir. Kullanıcılar, bu model sayesinde ülkelerin hava kalite endeks sıralamalarını daha iyi analiz edebilir.
+Ülkelerin Hava Kalite Endeks değerlerine göre gruplandırılmasını anlamak için graf modeli kullanılır. Hava kalite endeks değerleri kenar yapısı ile, ülkeler ise düğüm yapısı ile görselleştirilir. Kullanıcılar, bu model sayesinde ülkelerin hava kalite endeks sıralamalarını daha iyi analiz edebilir.
 
 ## Başlangıç
 
