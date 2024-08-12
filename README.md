@@ -36,6 +36,16 @@ Başlamadan önce aşağıdaki gereksinimleri karşıladığınızdan emin olun:
 #### Kurulum
 Projeyi yüklemek ve çalıştırmak için şu adımları izleyin:
 
+Bağımlılıkları yükleyin:
+```
+npm start
+```
+Uygulamayı geliştirme modunda çalıştırır. Tarayıcınızda görüntülemek için http://localhost:3000 adresini
+açın .
+
+Değişiklik yaptığınızda sayfa yeniden yüklenecektir.
+Konsolda herhangi bir lint hatası da görebilirsiniz.
+
 Projeyi yerele klonla:
 ```
 git clone https://github.com/didaryilmaz/AirQuality.git
