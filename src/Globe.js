@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import Globe from "react-globe.gl";
 import number from "numeral";
-import chroma from "chroma-js";
 
 export default function GlobeComponent() {
-    const [hoverD, setHoverD] = useState();
+    const [setHoverD] = useState();
     const globeEl = useRef();
     const [globeData, setGlobeData] = useState({
         countries: { features: [] },
@@ -12,30 +11,25 @@ export default function GlobeComponent() {
     });
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const colorScale = chroma.scale(['#8B0000', '#B22222', '#DC143C', '#FF6347', '#FFA07A', '#FFDAB9']).mode('lab');
-
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // CSV dosyasını çekme
                 const csvResponse = await fetch("air_index.csv");
                 const csvText = await csvResponse.text();
-                const selectedColumns = ["Countries", "Rank"]; // Görüntülemek istediğiniz sütun isimleri
+                const selectedColumns = ["Countries", "2022"];
                 const parsedData = parseCSV(csvText, selectedColumns);
                 displayData(parsedData, selectedColumns);
 
-                // Globe verisini çekme
                 const geoJsonResponse = await fetch("https://raw.githubusercontent.com/iamanas20/geojson/main/map11.geojson");
                 const geoJsonData = await geoJsonResponse.json();
                 setGlobeData({ countries: geoJsonData[0], points: geoJsonData[1] });
 
-                // CSV verisini duruma kaydetme
                 setData(parsedData);
                 setLoading(false);
             } catch (error) {
-                console.error("Veri yüklenirken hata oluştu:", error);
+                console.error("Error loading data:", error);
                 setLoading(false);
             }
         };
@@ -58,13 +52,9 @@ export default function GlobeComponent() {
     }, [globeData]);
 
     let lookup = {};
-    let maxRank = 0;
     for (let i = 0; i < data.length; i++) {
         if (!lookup[data[i][0]]) {
-            lookup[data[i][0]] = data[i][1]; // `Countries` değeri data[i][0], `Rank` değeri data[i][1] olacak şekilde ayarladım
-            if (data[i][1] > maxRank) {
-                maxRank = data[i][1];
-            }
+            lookup[data[i][0]] = parseInt(data[i][1], 10); 
         }
     }
 
@@ -89,6 +79,20 @@ export default function GlobeComponent() {
         });
     }
 
+    const getColor = (rank) => {
+        if (rank <= 25) return "#DD6262FF"; 
+        if (rank <= 50) return "#DD3131FF"; 
+        if (rank <= 75) return "#CE0000FF"; 
+        return "#890000FF"; 
+    };
+
+    const getLabel = (rank) => {
+        if (rank <= 25) return " İyi"; 
+        if (rank <= 50) return " Orta"; 
+        if (rank <= 75) return " Hassas gruplar için Sağlıksız "; 
+        return " Sağlıksız"; 
+    };
+
     return (
         <div>
             {loading && <div>Yükleniyor...</div>}
@@ -105,21 +109,21 @@ export default function GlobeComponent() {
                     onPolygonHover={setHoverD}
                     polygonCapColor={({ properties: d }) => {
                         const rank = lookup[d.ADMIN];
-                        const normalizedRank = rank / maxRank;
-                        return colorScale(normalizedRank).hex();
+                        return getColor(rank);
                     }}
                     polygonLabel={({ properties: d }) => {
                         const rank = lookup[d.ADMIN];
+                        const label = getLabel(rank);
                         return `
                             <div style="position: relative; z-index: 4; min-width: 108px; padding: 10px 14px;background: #fff;border: 1px solid #E5E5E5;box-shadow: 0px 2px 20px rgba(32, 32, 35, 0.13);border-radius: 4px; text-align: left;">
                                 <div style="font-family: 'Open sans', sans-serif; margin-bottom:10px;font-weight: 600;font-size: 13px;line-height: 16px;text-transform: capitalize;color: #2D3032;">
                                     ${d.ADMIN}
                                 </div>
                                 <div style="font-family: 'Open sans', sans-serif;font-size: 13px;line-height: 16px;color: #3E4850;">
-                                    Nüfus Sayısı: ${number(d.POP_EST).format("0a")}
+                                    Population: ${number(d.POP_EST).format("0a")}
                                 </div>
                                 <div style="font-family: 'Open sans', sans-serif;font-size: 13px;line-height: 16px;color: #3E4850;">
-                                    Hava Kalite Endeks Sıralaması: ${rank}
+                                    Air Quality Index : ${rank} (${label})
                                 </div>
                             </div>
                         `;
